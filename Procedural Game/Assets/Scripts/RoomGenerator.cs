@@ -1,12 +1,36 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class RoomGenerator : MonoBehaviour
 {
     public GameObject startRoom;
 
-    public GameObject[] roomObject;
+    public GameObject[] roomObjects;
 
-    public int amountOfRooms;
+    public List<GameObject> currentRooms;
+
+    public int amountOfRoomsToBeGenerated;
+
+    public int amountOfRoomsInTotal;
 
     public int distanceBetweenRooms;
+
+    public int previousDirection;
+
+    public void ResetTheCurrentRooms()
+    {
+        foreach (GameObject go in currentRooms)
+        {
+            if (go != startRoom)
+            {
+                currentRooms.Remove(go);
+            }
+
+        }
+
+
+
+
+
+    }
 }
