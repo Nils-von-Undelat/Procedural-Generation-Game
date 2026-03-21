@@ -16,6 +16,8 @@ public class Room : MonoBehaviour
 
     bool functionablePlaceForRoomFound = false;
 
+    GameObject testGo;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -50,7 +52,14 @@ public class Room : MonoBehaviour
 
                 foreach (GameObject go in localGOArray)
                 {
-                    Destroy(go);
+                    if (go == testGo)
+                    {
+
+                    }
+                    else
+                    {
+                        Destroy(go);
+                    }
                 }
 
                 this.enabled = false;
@@ -108,7 +117,7 @@ public class Room : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!collision.IsTouchingLayers(WhatIsRoom) || /*!collision.CompareTag("Room") */ !collision.gameObject)
+        if (!collision.IsTouchingLayers(WhatIsRoom) || collision.gameObject == null /*|| !collision.CompareTag("Room")*/)
         {
             functionablePlaceForRoomFound = true;
         }
@@ -125,12 +134,13 @@ public class Room : MonoBehaviour
 
         testPositionGameObject.tag = "TestRoom";
 
-        testPositionGameObject.AddComponent<BoxCollider2D>().isTrigger = false;
+        testPositionGameObject.AddComponent<BoxCollider2D>();
 
         BoxCollider2D testBoxCollider = testPositionGameObject.GetComponent<BoxCollider2D>();
 
-        Instantiate(testPositionGameObject, positionToInstantiateAt, Quaternion.identity);
+        testBoxCollider.isTrigger = true;
 
+        testGo = Instantiate(testPositionGameObject, positionToInstantiateAt, Quaternion.identity);
 
         float angle;
 
@@ -151,28 +161,51 @@ public class Room : MonoBehaviour
             angle = Vector3.Angle(transform.up, directionForOverLap);
         }
 
-        Debug.Log(angle);
+        //    Collider2D[] localCollider = Physics2D.OverlapBoxAll(testPositionGameObject.transform.position, colliderCheckSize, angle);
+        /*(colliderInArea == 0 || localCollider == null) &&*/
 
-        Collider2D[] localCollider = Physics2D.OverlapBoxAll(testPositionGameObject.transform.position, colliderCheckSize, angle);
+        //RaycastHit2D[] hits = Physics2D.BoxCastAll(transform.position, colliderCheckSize, angle, directionForOverLap, lengthOfRayForChecking, WhatIsRoom);
 
+        RaycastHit2D hit = Physics2D.BoxCast(transform.position, colliderCheckSize, angle, directionForOverLap, lengthOfRayForChecking, WhatIsRoom);
 
-        //foreach (Collider2D coll in localCollider)
+        // OnTriggerEnter2D(testBoxCollider);
+
+        int colliderInArea = 0;
+
+        //if (hits != null)
         //{
-        //    OnTriggerEnter2D(coll);
+        //    foreach (RaycastHit2D hit2D in hits)
+        //    {
+        //        if (hit2D.collider.gameObject.CompareTag("Room"))
+        //        {
+        //            colliderInArea++;
+        //        }
+
+        //    }
         //}
 
+        if (hit)
+        {
+            if (!hit.collider.isTrigger)
+            {
+                functionablePlaceForRoomFound = true;
 
-        OnTriggerEnter2D(testBoxCollider);
+            }
+            else
+            {
+                colliderInArea++;
+            }
+        }
 
-        // Debug.Log(localCollider.Length);
+        Debug.Log(colliderInArea);
 
-        if (gameObject == s_roomGenerator.startRoom || localCollider.Length == 1 && functionablePlaceForRoomFound)
+        if (gameObject == s_roomGenerator.startRoom || colliderInArea == 0 && functionablePlaceForRoomFound)
         {
             canBeInstantiated = true;
-            foreach (Collider2D coll in localCollider)
-            {
-                Destroy(coll);
-            }
+            //foreach (Collider2D coll in localCollider)
+            //{
+            //    Destroy(coll);
+            //}
             return true;
         }
         else
@@ -181,11 +214,12 @@ public class Room : MonoBehaviour
         }
     }
 
-
-    //private Collider2D[] CollidersInTheWay(GameObject go, Vector3 direction)
-    //{
-
-
-
-    //}
+    private void OnDrawGizmos()
+    {
+        if (functionablePlaceForRoomFound && testGo != null)
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawCube(testGo.transform.position, colliderCheckSize);
+        }
+    }
 }
