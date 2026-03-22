@@ -14,8 +14,6 @@ public class Room : MonoBehaviour
 
     [SerializeField] Vector2 colliderCheckSize;
 
-    bool functionablePlaceForRoomFound = false;
-
     GameObject testGo;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -28,41 +26,49 @@ public class Room : MonoBehaviour
     {
         if (s_roomGenerator == null) return;
 
-        if (s_roomGenerator.amountOfRoomsInTotal > 0)
+        if (s_roomGenerator.amountOfRoomsInTotal <= 0)
+            return;
+
+        Vector3 positionForRoom = PositionForNextRoom();
+
+        if (positionForRoom == Vector3.zero)
         {
-            Vector3 positionForRoom = PositionForNextRoom();
+            positionForRoom = PositionForNextRoom();
+        }
 
-            if ((positionForRoom == Vector3.zero))
+        if (positionForRoom != Vector3.zero && !hasAlreadyInstantiatedRooM && canBeInstantiated)
+        {
+            CreateTheActualRoom(positionForRoom);
+
+            FindAndRemoveAllTestObjects();
+
+            this.enabled = false;
+        }
+
+    }
+
+    private void CreateTheActualRoom(Vector3 positionToInstantiateAt)
+    {
+        hasAlreadyInstantiatedRooM = true;
+
+        GameObject gOToInstantiate = s_roomGenerator.roomObjects[Random.Range(0, s_roomGenerator.roomObjects.Length)];
+
+        Instantiate(gOToInstantiate, positionToInstantiateAt, Quaternion.identity);
+
+        s_roomGenerator.amountOfRoomsInTotal--;
+
+        s_roomGenerator.currentRooms.Add(gOToInstantiate);
+    }
+
+    private void FindAndRemoveAllTestObjects()
+    {
+        GameObject[] localGOArray = GameObject.FindGameObjectsWithTag("TestRoom");
+
+        foreach (GameObject go in localGOArray)
+        {
+            if (go != testGo)
             {
-                positionForRoom = PositionForNextRoom();
-            }
-
-            if (positionForRoom != Vector3.zero && !hasAlreadyInstantiatedRooM && canBeInstantiated)
-            {
-                hasAlreadyInstantiatedRooM = true;
-
-                GameObject gOToInstantiate = s_roomGenerator.roomObjects[Random.Range(0, s_roomGenerator.roomObjects.Length)];
-
-                Instantiate(gOToInstantiate, positionForRoom, Quaternion.identity);
-                s_roomGenerator.amountOfRoomsInTotal--;
-
-                s_roomGenerator.currentRooms.Add(gOToInstantiate);
-
-                GameObject[] localGOArray = GameObject.FindGameObjectsWithTag("TestRoom");
-
-                foreach (GameObject go in localGOArray)
-                {
-                    if (go == testGo)
-                    {
-
-                    }
-                    else
-                    {
-                        Destroy(go);
-                    }
-                }
-
-                this.enabled = false;
+                Destroy(go);
             }
         }
     }
@@ -78,148 +84,70 @@ public class Room : MonoBehaviour
 
         Vector3 direction = gameObject.transform.position;
 
-        Vector3 directionToCheckForColliders = new Vector3();
+        #region Determening the way for the object
 
         if (wayToGo == 0)
         {
             direction += transform.up + new Vector3(0, s_roomGenerator.distanceBetweenRooms, 0);
-            directionToCheckForColliders = transform.up + new Vector3(0, s_roomGenerator.distanceBetweenRooms, 0);
-            s_roomGenerator.previousDirection = 0;
         }
         else if (wayToGo == 1)
         {
             direction += -transform.up + new Vector3(0, -s_roomGenerator.distanceBetweenRooms, 0);
-            directionToCheckForColliders = -transform.up + new Vector3(0, -s_roomGenerator.distanceBetweenRooms, 0);
-            s_roomGenerator.previousDirection = 1;
         }
         else if (wayToGo == 2)
         {
             direction += -transform.right + new Vector3(-s_roomGenerator.distanceBetweenRooms, 0, 0);
-            directionToCheckForColliders = -transform.right + new Vector3(-s_roomGenerator.distanceBetweenRooms, 0, 0);
-            s_roomGenerator.previousDirection = 2;
         }
         else
         {
             direction += transform.right + new Vector3(s_roomGenerator.distanceBetweenRooms, 0, 0);
-            directionToCheckForColliders = transform.right + new Vector3(s_roomGenerator.distanceBetweenRooms, 0, 0);
-            s_roomGenerator.previousDirection = 3;
         }
+        #endregion
 
-        if (GOPosToInstantiateAt(direction, wayToGo, directionToCheckForColliders))
+        if (GOPosToInstantiateAt(direction))
         {
             return direction;
         }
-        else
-        {
-            return Vector3.zero;
-        }
+        return Vector3.zero;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private bool GOPosToInstantiateAt(Vector3 positionToInstantiateAt)
     {
-        if (!collision.IsTouchingLayers(WhatIsRoom) || collision.gameObject == null /*|| !collision.CompareTag("Room")*/)
+        GameObject testPositionGameObject = new()
         {
-            functionablePlaceForRoomFound = true;
-        }
-        else
-        {
-            functionablePlaceForRoomFound = false;
-        }
+            tag = "TestRoom"
+        };
+
+        testPositionGameObject.transform.position = positionToInstantiateAt;
+
+        testGo = testPositionGameObject;
+
+        if (HitRoom(testPositionGameObject, positionToInstantiateAt))
+            return false;
+
+        canBeInstantiated = true;
+        return true;
     }
 
-
-    private bool GOPosToInstantiateAt(Vector3 positionToInstantiateAt, int direction, Vector3 directionForOverLap)
+    private bool HitRoom(GameObject testPosition, Vector3 direction)
     {
-        GameObject testPositionGameObject = new GameObject();
+        RaycastHit2D hit = Physics2D.BoxCast(testPosition.transform.position, colliderCheckSize, 0, direction, s_roomGenerator.distanceBetweenRooms, WhatIsRoom);
 
-        testPositionGameObject.tag = "TestRoom";
-
-        testPositionGameObject.AddComponent<BoxCollider2D>();
-
-        BoxCollider2D testBoxCollider = testPositionGameObject.GetComponent<BoxCollider2D>();
-
-        testBoxCollider.isTrigger = true;
-
-        testGo = Instantiate(testPositionGameObject, positionToInstantiateAt, Quaternion.identity);
-
-        float angle;
-
-        if (direction == 0)
-        {// up
-            angle = Vector3.Angle(transform.up, directionForOverLap);
-        }
-        else if (direction == 1)
-        { // down
-            angle = Vector3.Angle(transform.up, directionForOverLap);
-        }
-        else if (direction == 2)
-        { // left
-            angle = Vector3.Angle(transform.up, directionForOverLap);
-        }
-        else
-        { // right
-            angle = Vector3.Angle(transform.up, directionForOverLap);
-        }
-
-        //    Collider2D[] localCollider = Physics2D.OverlapBoxAll(testPositionGameObject.transform.position, colliderCheckSize, angle);
-        /*(colliderInArea == 0 || localCollider == null) &&*/
-
-        //RaycastHit2D[] hits = Physics2D.BoxCastAll(transform.position, colliderCheckSize, angle, directionForOverLap, lengthOfRayForChecking, WhatIsRoom);
-
-        RaycastHit2D hit = Physics2D.BoxCast(transform.position, colliderCheckSize, angle, directionForOverLap, lengthOfRayForChecking, WhatIsRoom);
-
-        // OnTriggerEnter2D(testBoxCollider);
-
-        int colliderInArea = 0;
-
-        //if (hits != null)
-        //{
-        //    foreach (RaycastHit2D hit2D in hits)
-        //    {
-        //        if (hit2D.collider.gameObject.CompareTag("Room"))
-        //        {
-        //            colliderInArea++;
-        //        }
-
-        //    }
-        //}
-
-        if (hit)
+        if (hit && hit.collider.gameObject.GetComponent<Room>() != null)
         {
-            if (!hit.collider.isTrigger)
-            {
-                functionablePlaceForRoomFound = true;
-
-            }
-            else
-            {
-                colliderInArea++;
-            }
-        }
-
-        Debug.Log(colliderInArea);
-
-        if (gameObject == s_roomGenerator.startRoom || colliderInArea == 0 && functionablePlaceForRoomFound)
-        {
-            canBeInstantiated = true;
-            //foreach (Collider2D coll in localCollider)
-            //{
-            //    Destroy(coll);
-            //}
+            FindAndRemoveAllTestObjects();
             return true;
         }
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
 
     private void OnDrawGizmos()
     {
-        if (functionablePlaceForRoomFound && testGo != null)
+        if (testGo != null)
         {
             Gizmos.color = Color.green;
-            Gizmos.DrawCube(testGo.transform.position, colliderCheckSize);
+            Gizmos.DrawWireCube(testGo.transform.position, colliderCheckSize);
         }
     }
 }

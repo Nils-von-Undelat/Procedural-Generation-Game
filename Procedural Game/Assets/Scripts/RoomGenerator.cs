@@ -15,7 +15,7 @@ public class RoomGenerator : MonoBehaviour
 
     public int distanceBetweenRooms;
 
-    public int previousDirection;
+    public Sprite spriteForTesy;
 
     public void ResetTheCurrentRooms()
     {
