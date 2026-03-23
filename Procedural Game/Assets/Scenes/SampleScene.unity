@@ -198,6 +198,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &369105487
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 369105488}
+  m_Layer: 0
+  m_Name: BridgeParent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &369105488
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 369105487}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -15.28284, y: -7.05473, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &515010617
 GameObject:
   m_ObjectHideFlags: 0
@@ -881,11 +912,11 @@ MonoBehaviour:
   - {fileID: 5129268168216222992, guid: 542ac03e15d67b448b6017c2cdb5bde7, type: 3}
   - {fileID: 5129268168216222992, guid: 7501e2b5002a40a46a67d841a2ca1af2, type: 3}
   - {fileID: 5129268168216222992, guid: bb861a31cf9f8d0479ea8024ac35b11d, type: 3}
-  currentRooms: []
   amountOfRoomsToBeGenerated: 12
-  amountOfRoomsInTotal: 1000
+  amountOfRoomsInTotal: 2000
   distanceBetweenRooms: 4
   spriteForTesy: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  bridgeParent: {fileID: 369105487}
 --- !u!4 &1629068701
 Transform:
   m_ObjectHideFlags: 0
@@ -1045,3 +1076,4 @@ SceneRoots:
   - {fileID: 515010621}
   - {fileID: 10195218}
   - {fileID: 1217827675}
+  - {fileID: 369105488}

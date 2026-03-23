@@ -9,8 +9,6 @@ public class RoomGenerator : MonoBehaviour
 
     public GameObject[] roomObjects;
 
-    public List<GameObject> currentRooms;
-
     public int amountOfRoomsToBeGenerated;
 
     public int amountOfRoomsInTotal;
@@ -19,20 +17,6 @@ public class RoomGenerator : MonoBehaviour
 
     public Sprite spriteForTesy;
 
-    public void ResetTheCurrentRooms()
-    {
-        foreach (GameObject go in currentRooms)
-        {
-            if (go != startRoom)
-            {
-                currentRooms.Remove(go);
-            }
+    public GameObject bridgeParent;
 
-        }
-
-
-
-
-
-    }
 }

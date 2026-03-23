@@ -63,13 +63,12 @@ public class Room : MonoBehaviour
 
         GameObject gOToInstantiate = s_roomGenerator.roomObjects[Random.Range(0, s_roomGenerator.roomObjects.Length)];
 
-        GameObject roomGO = Instantiate(gOToInstantiate, positionToInstantiateAt, Quaternion.identity);
+        GameObject bridgeGoal = Instantiate(gOToInstantiate, positionToInstantiateAt, Quaternion.identity, s_roomGenerator.roomParentGO.transform);
 
-        roomGO.transform.SetParent(s_roomGenerator.roomParentGO.transform, true);
+        BridgeBetweenRooms(positionToInstantiateAt, bridgeGoal);
 
         s_roomGenerator.amountOfRoomsInTotal--;
 
-        s_roomGenerator.currentRooms.Add(gOToInstantiate);
     }
 
     private void FindAndRemoveAllTestObjects()
@@ -161,5 +160,91 @@ public class Room : MonoBehaviour
             Gizmos.color = Color.green;
             Gizmos.DrawWireCube(testGo.transform.position, colliderCheckSize);
         }
+    }
+
+    private GameObject BridgeBetweenRooms(Vector3 positionForNextRoom, GameObject nextRoom)
+    {
+        GameObject bridgeGO = new()
+        {
+            tag = "Bridge",
+            name = "BridgeBetweenRoom"
+        };
+
+        bridgeGO.AddComponent<SpriteRenderer>().color = Color.green;
+
+        bridgeGO.GetComponent<SpriteRenderer>().sprite = s_roomGenerator.spriteForTesy;
+
+
+        BoxCollider2D box = gameObject.GetComponent<BoxCollider2D>();
+        BoxCollider2D box2 = nextRoom.GetComponent<BoxCollider2D>();
+
+
+        Vector3 middleBetweenRooms;
+
+        Vector3 rotationForBridge;
+
+        if (DirectionAndSizeOfBridge(positionForNextRoom, out rotationForBridge) == transform.up)
+        {
+            middleBetweenRooms = DirectionAndSizeOfBridge(positionForNextRoom, out rotationForBridge) + new Vector3(0, Halving(s_roomGenerator.distanceBetweenRooms), 0);
+        }
+        else if (DirectionAndSizeOfBridge(positionForNextRoom, out rotationForBridge) == -transform.up)
+        {
+            middleBetweenRooms = DirectionAndSizeOfBridge(positionForNextRoom, out rotationForBridge) + new Vector3(0, -Halving(s_roomGenerator.distanceBetweenRooms), 0);
+        }
+        else if (DirectionAndSizeOfBridge(positionForNextRoom, out rotationForBridge) == transform.right)
+        {
+            middleBetweenRooms = DirectionAndSizeOfBridge(positionForNextRoom, out rotationForBridge) + new Vector3(Halving(s_roomGenerator.distanceBetweenRooms), 0, 0);
+        }
+        else
+        {
+            middleBetweenRooms = DirectionAndSizeOfBridge(positionForNextRoom, out rotationForBridge) + new Vector3(-Halving(s_roomGenerator.distanceBetweenRooms), 0, 0);
+        }
+
+        middleBetweenRooms += gameObject.transform.position;
+
+        bridgeGO.transform.position = middleBetweenRooms;
+
+        bridgeGO.transform.rotation = Quaternion.Euler(rotationForBridge * 90);
+
+        bridgeGO.transform.localScale = new Vector3(1, 2, 1);
+
+        bridgeGO.transform.SetParent(s_roomGenerator.bridgeParent.transform, true);
+
+
+        return bridgeGO;
+    }
+
+    private Vector3 DirectionAndSizeOfBridge(Vector3 direction, out Vector3 rotationForBridge)
+    {
+        Vector3 bridgeDirection;
+
+        if (direction.x > gameObject.transform.position.x)
+        {
+            bridgeDirection = transform.right;
+            rotationForBridge = new Vector3(0, 0, transform.right.magnitude);
+
+        }
+        else if (direction.x < gameObject.transform.position.x)
+        {
+            bridgeDirection = -transform.right;
+            rotationForBridge = new Vector3(0, 0, -transform.right.magnitude);
+
+        }
+        else if (direction.y > gameObject.transform.position.y)
+        {
+            bridgeDirection = transform.up;
+            rotationForBridge = new Vector3(0, 0, 2);
+        }
+        else
+        {
+            bridgeDirection = -transform.up;
+            rotationForBridge = new Vector3(0, 0, -2);
+        }
+        return bridgeDirection;
+    }
+
+    private int Halving(int numberToBeHalved)
+    {
+        return numberToBeHalved / 2;
     }
 }

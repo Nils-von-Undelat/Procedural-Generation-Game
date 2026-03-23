@@ -6,6 +6,7 @@ TagManager:
   tags:
   - TestRoom
   - Room
+  - Bridge
   layers:
   - Default
   - TransparentFX
