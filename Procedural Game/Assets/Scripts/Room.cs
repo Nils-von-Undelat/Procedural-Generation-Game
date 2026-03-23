@@ -16,10 +16,14 @@ public class Room : MonoBehaviour
 
     GameObject testGo;
 
+    int roomsAbleToBeGenerated;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         s_roomGenerator = FindAnyObjectByType<RoomGenerator>();
+
+        roomsAbleToBeGenerated = Random.Range(1, 4);
     }
 
     private void Update()
@@ -31,13 +35,19 @@ public class Room : MonoBehaviour
 
         Vector3 positionForRoom = PositionForNextRoom();
 
-        if (positionForRoom == Vector3.zero)
+        if (positionForRoom == Vector3.zero) return;
+
+        if (!canBeInstantiated) return;
+
+        if (roomsAbleToBeGenerated != 1)
         {
-            positionForRoom = PositionForNextRoom();
+            CreateTheActualRoom(positionForRoom);
         }
 
-        if (positionForRoom != Vector3.zero && !hasAlreadyInstantiatedRooM && canBeInstantiated)
+        else if (!hasAlreadyInstantiatedRooM)
         {
+            hasAlreadyInstantiatedRooM = true;
+
             CreateTheActualRoom(positionForRoom);
 
             FindAndRemoveAllTestObjects();
@@ -49,7 +59,7 @@ public class Room : MonoBehaviour
 
     private void CreateTheActualRoom(Vector3 positionToInstantiateAt)
     {
-        hasAlreadyInstantiatedRooM = true;
+        roomsAbleToBeGenerated--;
 
         GameObject gOToInstantiate = s_roomGenerator.roomObjects[Random.Range(0, s_roomGenerator.roomObjects.Length)];
 

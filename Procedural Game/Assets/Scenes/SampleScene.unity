@@ -883,7 +883,7 @@ MonoBehaviour:
   - {fileID: 5129268168216222992, guid: bb861a31cf9f8d0479ea8024ac35b11d, type: 3}
   currentRooms: []
   amountOfRoomsToBeGenerated: 12
-  amountOfRoomsInTotal: 32
+  amountOfRoomsInTotal: 1000
   distanceBetweenRooms: 4
   spriteForTesy: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
 --- !u!4 &1629068701
