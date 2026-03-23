@@ -53,7 +53,9 @@ public class Room : MonoBehaviour
 
         GameObject gOToInstantiate = s_roomGenerator.roomObjects[Random.Range(0, s_roomGenerator.roomObjects.Length)];
 
-        Instantiate(gOToInstantiate, positionToInstantiateAt, Quaternion.identity);
+        GameObject roomGO = Instantiate(gOToInstantiate, positionToInstantiateAt, Quaternion.identity);
+
+        roomGO.transform.SetParent(s_roomGenerator.roomParentGO.transform, true);
 
         s_roomGenerator.amountOfRoomsInTotal--;
 

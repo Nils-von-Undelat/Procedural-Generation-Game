@@ -839,7 +839,7 @@ Transform:
   m_GameObject: {fileID: 1217827674}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.54944, y: 1.79047, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -875,6 +875,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomGenerator
   startRoom: {fileID: 671297752}
+  roomParentGO: {fileID: 1217827674}
   roomObjects:
   - {fileID: 5129268168216222992, guid: 81676fe16d62a4042baea5bfd93897be, type: 3}
   - {fileID: 5129268168216222992, guid: 542ac03e15d67b448b6017c2cdb5bde7, type: 3}
@@ -882,7 +883,7 @@ MonoBehaviour:
   - {fileID: 5129268168216222992, guid: bb861a31cf9f8d0479ea8024ac35b11d, type: 3}
   currentRooms: []
   amountOfRoomsToBeGenerated: 12
-  amountOfRoomsInTotal: 12
+  amountOfRoomsInTotal: 32
   distanceBetweenRooms: 4
   spriteForTesy: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
 --- !u!4 &1629068701

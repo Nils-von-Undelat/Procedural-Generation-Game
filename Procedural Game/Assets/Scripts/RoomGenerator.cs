@@ -5,6 +5,8 @@ public class RoomGenerator : MonoBehaviour
 {
     public GameObject startRoom;
 
+    public GameObject roomParentGO;
+
     public GameObject[] roomObjects;
 
     public List<GameObject> currentRooms;
