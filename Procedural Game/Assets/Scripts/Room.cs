@@ -174,71 +174,77 @@ public class Room : MonoBehaviour
 
         bridgeGO.GetComponent<SpriteRenderer>().sprite = s_roomGenerator.spriteForTesy;
 
+        Vector3 directionForRacyast;
 
-        BoxCollider2D box = gameObject.GetComponent<BoxCollider2D>();
-        BoxCollider2D box2 = nextRoom.GetComponent<BoxCollider2D>();
+        if (DirectionAndSizeOfBridge(positionForNextRoom) == transform.up)
+            directionForRacyast = transform.up;
 
+        else if (DirectionAndSizeOfBridge(positionForNextRoom) == -transform.up)
+            directionForRacyast = -transform.up;
 
-        Vector3 middleBetweenRooms;
+        else if (DirectionAndSizeOfBridge(positionForNextRoom) == transform.right)
+            directionForRacyast = transform.right;
 
-        Vector3 rotationForBridge;
-
-        if (DirectionAndSizeOfBridge(positionForNextRoom, out rotationForBridge) == transform.up)
-        {
-            middleBetweenRooms = DirectionAndSizeOfBridge(positionForNextRoom, out rotationForBridge) + new Vector3(0, Halving(s_roomGenerator.distanceBetweenRooms), 0);
-        }
-        else if (DirectionAndSizeOfBridge(positionForNextRoom, out rotationForBridge) == -transform.up)
-        {
-            middleBetweenRooms = DirectionAndSizeOfBridge(positionForNextRoom, out rotationForBridge) + new Vector3(0, -Halving(s_roomGenerator.distanceBetweenRooms), 0);
-        }
-        else if (DirectionAndSizeOfBridge(positionForNextRoom, out rotationForBridge) == transform.right)
-        {
-            middleBetweenRooms = DirectionAndSizeOfBridge(positionForNextRoom, out rotationForBridge) + new Vector3(Halving(s_roomGenerator.distanceBetweenRooms), 0, 0);
-        }
         else
-        {
-            middleBetweenRooms = DirectionAndSizeOfBridge(positionForNextRoom, out rotationForBridge) + new Vector3(-Halving(s_roomGenerator.distanceBetweenRooms), 0, 0);
-        }
+            directionForRacyast = -transform.right;
 
-        middleBetweenRooms += gameObject.transform.position;
 
-        bridgeGO.transform.position = middleBetweenRooms;
 
-        bridgeGO.transform.rotation = Quaternion.Euler(rotationForBridge * 90);
+        Vector3 midPos = (transform.position + nextRoom.transform.position) / 2;
 
-        bridgeGO.transform.localScale = new Vector3(1, 2, 1);
+        RaycastForTheBridgePosition(out RaycastHit2D hitForNextRoom, out RaycastHit2D hitForThisGO, midPos, directionForRacyast);
+
+        midPos = (hitForThisGO.point + hitForNextRoom.point) / 2;
+
+        RaycastForTheBridgePosition(out hitForNextRoom, out hitForThisGO, midPos, directionForRacyast);
+
+        Vector2 referenceDifference = hitForThisGO.point - hitForNextRoom.point;
+        Vector2 scale = new(referenceDifference.x, referenceDifference.y);
+
+        if (scale.x == 0)
+            scale.x = 1;
+
+        if (scale.y == 0)
+            scale.y = 1;
+
+        bridgeGO.transform.position = midPos;
+
+        bridgeGO.transform.localScale = scale;
 
         bridgeGO.transform.SetParent(s_roomGenerator.bridgeParent.transform, true);
-
 
         return bridgeGO;
     }
 
-    private Vector3 DirectionAndSizeOfBridge(Vector3 direction, out Vector3 rotationForBridge)
+    private void RaycastForTheBridgePosition(out RaycastHit2D hitForGoalObject, out RaycastHit2D hitForcurrentObject, Vector3 originPos, Vector3 directionForRaycast)
+    {
+        hitForGoalObject = Physics2D.Raycast(originPos, directionForRaycast, Halving(s_roomGenerator.distanceBetweenRooms), WhatIsRoom);
+
+        hitForcurrentObject = Physics2D.Raycast(originPos, -directionForRaycast, Halving(s_roomGenerator.distanceBetweenRooms), WhatIsRoom);
+
+    }
+
+    private Vector3 DirectionAndSizeOfBridge(Vector3 direction)
     {
         Vector3 bridgeDirection;
 
         if (direction.x > gameObject.transform.position.x)
         {
             bridgeDirection = transform.right;
-            rotationForBridge = new Vector3(0, 0, transform.right.magnitude);
 
         }
         else if (direction.x < gameObject.transform.position.x)
         {
             bridgeDirection = -transform.right;
-            rotationForBridge = new Vector3(0, 0, -transform.right.magnitude);
 
         }
         else if (direction.y > gameObject.transform.position.y)
         {
             bridgeDirection = transform.up;
-            rotationForBridge = new Vector3(0, 0, 2);
         }
         else
         {
             bridgeDirection = -transform.up;
-            rotationForBridge = new Vector3(0, 0, -2);
         }
         return bridgeDirection;
     }
