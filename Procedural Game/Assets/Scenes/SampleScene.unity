@@ -789,7 +789,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Color: {r: 0.005879402, g: 0, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -979,7 +979,8 @@ MonoBehaviour:
   - {fileID: 5129268168216222992, guid: 6f5e2490d632d444da1932ea1d8d3a12, type: 3}
   - {fileID: 5129268168216222992, guid: 79b5b6a974cc45b458687977c88f712d, type: 3}
   - {fileID: 5129268168216222992, guid: 6a59e56d8a6ee264c86c13449f30e4e5, type: 3}
-  bossRoom: {fileID: 0}
+  bossRoom: {fileID: 5129268168216222992, guid: 4806539f3721b4e4ba1e5cdd39577e62, type: 3}
+  bossRoomHasBeenInstantiated: 0
   amountOfRoomsToBeGenerated: 12
   amountOfRoomsInTotal: 2000
   distanceBetweenRooms: 4

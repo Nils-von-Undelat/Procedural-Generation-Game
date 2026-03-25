@@ -13,6 +13,8 @@ public class RoomGenerator : MonoBehaviour
 
     public GameObject bossRoom;
 
+    public bool bossRoomHasBeenInstantiated;
+
     public int amountOfRoomsToBeGenerated;
 
     public int amountOfRoomsInTotal;
