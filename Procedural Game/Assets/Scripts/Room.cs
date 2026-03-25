@@ -54,7 +54,6 @@ public class Room : MonoBehaviour
 
             this.enabled = false;
         }
-
     }
 
     private void CreateTheActualRoom(Vector3 positionToInstantiateAt)
@@ -68,55 +67,51 @@ public class Room : MonoBehaviour
         BridgeBetweenRooms(positionToInstantiateAt, bridgeGoal);
 
         s_roomGenerator.amountOfRoomsInTotal--;
-
     }
 
     private GameObject GOToInstantiate()
     {
-        GameObject gObject;
-
-
-        if (!s_roomGenerator.bossRoomHasBeenInstantiated)
+        if (gameObject == s_roomGenerator.startRoom)
         {
-            if (Random.Range(0, s_roomGenerator.amountOfRoomsToBeGenerated) == 0)
-            {
-                s_roomGenerator.bossRoomHasBeenInstantiated = true;
-                gObject = s_roomGenerator.bossRoom;
-            }
-            else if (s_roomGenerator.totalTreasureRoomsAllowed >= s_roomGenerator.treasureRoomsInScene)
-            {
-
-                if (Random.Range(0, 4) != 0)
-                {
-                    gObject = s_roomGenerator.roomObjects[Random.Range(0, s_roomGenerator.roomObjects.Length)];
-                }
-                else
-                {
-                    s_roomGenerator.treasureRoomsInScene++;
-                    gObject = s_roomGenerator.treasureRoomObjects[Random.Range(0, s_roomGenerator.treasureRoomObjects.Length)];
-                }
-            }
-            else
-                gObject = s_roomGenerator.roomObjects[Random.Range(0, s_roomGenerator.roomObjects.Length)];
+            return CalculateIfTreasureObject();
         }
-        else if (s_roomGenerator.totalTreasureRoomsAllowed >= s_roomGenerator.treasureRoomsInScene)
-        {
 
-            if (Random.Range(0, 4) != 0)
-            {
-                gObject = s_roomGenerator.roomObjects[Random.Range(0, s_roomGenerator.roomObjects.Length)];
-            }
-            else
-            {
-                s_roomGenerator.treasureRoomsInScene++;
-                gObject = s_roomGenerator.treasureRoomObjects[Random.Range(0, s_roomGenerator.treasureRoomObjects.Length)];
-            }
+        if (s_roomGenerator.amountOfRoomsInTotal == 1)
+        {
+            s_roomGenerator.exitRoomHasBeenInstantiated = true;
+            return s_roomGenerator.exitRoom;
+        }
+
+        if (s_roomGenerator.bossRoomHasBeenInstantiated)
+            return CalculateIfTreasureObject();
+
+        if (Random.Range(0, s_roomGenerator.amountOfRoomsInTotal) == 0 || s_roomGenerator.amountOfRoomsInTotal == 2)
+        {
+            s_roomGenerator.bossRoomHasBeenInstantiated = true;
+            return s_roomGenerator.bossRoom;
         }
         else
+        {
+            return CalculateIfTreasureObject();
+        }
+    }
 
-            gObject = s_roomGenerator.roomObjects[Random.Range(0, s_roomGenerator.roomObjects.Length)];
+    private GameObject CalculateIfTreasureObject()
+    {
+        if (!(s_roomGenerator.totalTreasureRoomsAllowed >= s_roomGenerator.treasureRoomsInScene))
+        {
+            return s_roomGenerator.roomObjects[Random.Range(0, s_roomGenerator.roomObjects.Length)];
+        }
 
-        return gObject;
+        if (Random.Range(0, 4) != 0)
+        {
+            return s_roomGenerator.roomObjects[Random.Range(0, s_roomGenerator.roomObjects.Length)];
+        }
+        else
+        {
+            s_roomGenerator.treasureRoomsInScene++;
+            return s_roomGenerator.treasureRoomObjects[Random.Range(0, s_roomGenerator.treasureRoomObjects.Length)];
+        }
     }
 
     private void FindAndRemoveAllTestObjects()

@@ -13,7 +13,11 @@ public class RoomGenerator : MonoBehaviour
 
     public GameObject bossRoom;
 
+    public GameObject exitRoom;
+
     public bool bossRoomHasBeenInstantiated;
+
+    public bool exitRoomHasBeenInstantiated;
 
     public int amountOfRoomsToBeGenerated;
 
