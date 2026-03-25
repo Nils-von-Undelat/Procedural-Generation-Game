@@ -61,7 +61,28 @@ public class Room : MonoBehaviour
     {
         roomsAbleToBeGenerated--;
 
-        GameObject gOToInstantiate = s_roomGenerator.roomObjects[Random.Range(0, s_roomGenerator.roomObjects.Length)];
+        GameObject gOToInstantiate;
+
+
+
+        if (s_roomGenerator.totalTreasureRoomsAllowed >= s_roomGenerator.treasureRoomsInScene)
+        {
+
+            if (Random.Range(0, 4) != 0)
+            {
+                gOToInstantiate = s_roomGenerator.roomObjects[Random.Range(0, s_roomGenerator.roomObjects.Length)];
+            }
+            else
+            {
+                s_roomGenerator.treasureRoomsInScene++;
+                gOToInstantiate = s_roomGenerator.treasureRoomObjects[Random.Range(0, s_roomGenerator.treasureRoomObjects.Length)];
+            }
+
+
+        }
+        else
+            gOToInstantiate = s_roomGenerator.roomObjects[Random.Range(0, s_roomGenerator.roomObjects.Length)];
+
 
         GameObject bridgeGoal = Instantiate(gOToInstantiate, positionToInstantiateAt, Quaternion.identity, s_roomGenerator.roomParentGO.transform);
 

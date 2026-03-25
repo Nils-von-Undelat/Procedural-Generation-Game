@@ -917,7 +917,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1405240086}
   m_Layer: 0
-  m_Name: TreasureRoom
+  m_Name: TreasureRoomParent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -974,11 +974,19 @@ MonoBehaviour:
   - {fileID: 5129268168216222992, guid: 542ac03e15d67b448b6017c2cdb5bde7, type: 3}
   - {fileID: 5129268168216222992, guid: 7501e2b5002a40a46a67d841a2ca1af2, type: 3}
   - {fileID: 5129268168216222992, guid: bb861a31cf9f8d0479ea8024ac35b11d, type: 3}
+  treasureRoomObjects:
+  - {fileID: 5129268168216222992, guid: a4a7947fc21b95349a60c8af3e67c4a4, type: 3}
+  - {fileID: 5129268168216222992, guid: 6f5e2490d632d444da1932ea1d8d3a12, type: 3}
+  - {fileID: 5129268168216222992, guid: 79b5b6a974cc45b458687977c88f712d, type: 3}
+  - {fileID: 5129268168216222992, guid: 6a59e56d8a6ee264c86c13449f30e4e5, type: 3}
+  bossRoom: {fileID: 0}
   amountOfRoomsToBeGenerated: 12
   amountOfRoomsInTotal: 2000
   distanceBetweenRooms: 4
   spriteForTesy: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   bridgeParent: {fileID: 369105487}
+  totalTreasureRoomsAllowed: 500
+  treasureRoomsInScene: 0
 --- !u!4 &1629068701
 Transform:
   m_ObjectHideFlags: 0
